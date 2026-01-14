@@ -6,6 +6,6 @@ We will mark these with Git Tags
 
 # Changes in releases
 
-## release 1.1.0
+## release 1.0.0
 
-Initial usable release
+Initial release
