@@ -1,0 +1,24 @@
+&kt_utils_test.SendNotificationRequest{
+  Notification: kt_utils_test.Notification{
+    CreatedAt: nil,
+    HtmlContent: nil,
+    Id: "notif-id",
+    Severity: "info",
+    Title: "Notif Title",
+  },
+  Recipients: &kt_utils_test.Recipients{
+    ContainerUsers: &kt_utils_test.ContainerUserRecipients{
+      ContainerIds: nil,
+      Filters: &kt_utils_test.ContainerUserRecipientFilters{
+        HasAnyOfRoles: &[]kt_utils_test.RecipientsRole{
+          "admin",
+          "view",
+        },
+      },
+    },
+    UserIdTerms: &[]string{
+      "user1",
+      "user2",
+    },
+  },
+}
