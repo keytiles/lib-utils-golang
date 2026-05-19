@@ -6,6 +6,12 @@ We will mark these with Git Tags
 
 # Changes in releases
 
+## release 1.2.0
+
+New features:
+
+- Adding some simple but often useful map helpers: `MapKeys()` and `MapValuesSet()`
+
 ## release 1.1.0
 
 New features:
