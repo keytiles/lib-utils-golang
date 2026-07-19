@@ -3,7 +3,7 @@ package kt_utils_test
 import (
 	"testing"
 
-	"github.com/keytiles/lib-utils-golang/pkg/kt_utils"
+	"github.com/keytiles/lib-utils-golang/v2/pkg/kt_utils"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/keytiles/lib-sets-golang/ktsets"
+	"github.com/keytiles/lib-sets-golang/v2/pkg/kt_sets"
 )
 
 var (
@@ -26,9 +26,9 @@ func StringSimpleResolve(input string, vars map[string]any) string {
 
 // We have a string with variable names in it (Python style), e.g. "My string with {var1} and {var2} variables."
 // This method returns all variable names it finds in the text, in our case {"var1", "var2"} would be returned
-func StringExtractVariableNames(s string) ktsets.Set[string] {
+func StringExtractVariableNames(s string) *kt_sets.Set[string] {
 	matches := VARIABLE_MATCHER.FindAllStringSubmatch(s, -1)
-	result := ktsets.NewSetWithCapacity[string](len(matches))
+	result := kt_sets.NewSetWithCapacity[string](len(matches))
 	for _, match := range matches {
 		if len(match) > 1 {
 			result.Add(match[1]) // match[1] is the first group
