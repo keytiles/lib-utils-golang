@@ -1,7 +1,7 @@
 package kt_utils
 
 import (
-	"github.com/keytiles/lib-sets-golang/ktsets"
+	"github.com/keytiles/lib-sets-golang/v2/pkg/kt_sets"
 )
 
 // `maps` package returns an iterable seq only of keys of a map - this one returns a real slice.
@@ -20,8 +20,8 @@ func MapKeys[K comparable, V any](m map[K]V) []K {
 // `maps` package returns an iterable seq only of values of a map - this one returns values as a Set.
 // Of course you can also do this `values := slices.Collect(maps.Values(m))` but that returns a slice and duplicated
 // values appear there as is.
-func MapValuesSet[K comparable, V comparable](m map[K]V) ktsets.Set[V] {
-	set := ktsets.NewSetWithCapacity[V](len(m))
+func MapValuesSet[K comparable, V comparable](m map[K]V) *kt_sets.Set[V] {
+	set := kt_sets.NewSetWithCapacity[V](len(m))
 	for _, v := range m {
 		set.Add(v)
 	}

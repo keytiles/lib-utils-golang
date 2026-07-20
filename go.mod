@@ -1,9 +1,9 @@
-module github.com/keytiles/lib-utils-golang
+module github.com/keytiles/lib-utils-golang/v2
 
-go 1.23.4
+go 1.26.0
 
 require (
-	github.com/keytiles/lib-sets-golang v1.2.0
+	github.com/keytiles/lib-sets-golang/v2 v2.0.1
 	github.com/sanity-io/litter v1.5.8
 	github.com/stretchr/testify v1.8.4
 )
