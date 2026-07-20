@@ -14,7 +14,7 @@ Breaking:
   - `MapValuesSet` and `StringExtractVariableNames` now return `*kt_sets.Set[...]` (pointers), matching lib-sets v2 constructors
 
 New features:
-- Applying new Keytiles lib standards
+- Applying Keytiles lib standards
   - Introducing constant `LIB_NAME`
   - Based on the above introducing constants `PACKAGE_NAME` in all packages - used as a prefix for kt_errors.Fault sources and Logging
 
