@@ -170,3 +170,75 @@ func getFileContentUnixStyle(filePath string) (string, error) {
 	}
 	return "", err
 }
+
+// Lazy []byte-as-string formatting via VarPrinter.BytesAsString: text output, nil/empty slices,
+// PrintS dispatch, flag ignored for non-[]byte TheVar, and regression that raw []byte still uses litter dump.
+func TestVarPrinter_BytesAsString(t *testing.T) {
+
+	t.Run("formats byte slice as string", func(t *testing.T) {
+		// ---- GIVEN
+		// text payload with BytesAsString flag for lazy conversion
+		vp := kt_utils.VarPrinter{TheVar: []byte("hello"), BytesAsString: true}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := "hello"
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("nil slice yields empty string", func(t *testing.T) {
+		// ---- GIVEN
+		// nil byte slice
+		vp := kt_utils.VarPrinter{TheVar: []byte(nil), BytesAsString: true}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := ""
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("empty slice yields empty string", func(t *testing.T) {
+		// ---- GIVEN
+		// empty but non-nil byte slice
+		vp := kt_utils.VarPrinter{TheVar: []byte{}, BytesAsString: true}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := ""
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("uses PrintS path not PrintVarS on raw TheVar", func(t *testing.T) {
+		// ---- GIVEN
+		// BytesAsString is on VarPrinter — PrintVarS on TheVar alone does not apply the flag
+		b := []byte("payload")
+		vp := kt_utils.VarPrinter{TheVar: b, BytesAsString: true}
+		// ---- WHEN
+		stStr := vp.PrintS(false)
+		// ---- THEN
+		expected := "payload"
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("flag ignored when TheVar is not byte slice", func(t *testing.T) {
+		// ---- GIVEN
+		// BytesAsString set but TheVar is a string — falls through to normal PrintVarS
+		vp := kt_utils.VarPrinter{TheVar: "hello", BytesAsString: true}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := "\"hello\""
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("raw byte slice still uses litter dump", func(t *testing.T) {
+		// ---- GIVEN
+		// raw []byte without BytesAsString — unchanged v1.2 litter behavior
+		vp := kt_utils.VarPrinter{TheVar: []byte("hello")}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := "[]uint8{104,101,108,108,111}"
+		assert.Equal(t, expected, stStr)
+	})
+}

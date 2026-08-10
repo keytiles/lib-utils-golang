@@ -74,25 +74,40 @@ type SPrinter interface {
 //	LOGGER.Debug("and my struct was: %s", helper.VarPrinter{TheVar: myStruct})
 //
 // This way the string will be only constructed when LOGGER's level is DEBUG - othwise not at all
+//
+// For []byte text payloads use BytesAsString: true — do not use TheVar: string(bytes) as that converts eagerly:
+//
+//	LOGGER.Debug("payload: %s", kt_utils.VarPrinter{TheVar: bytes, BytesAsString: true})
 type VarPrinter struct {
-	TheVar      any
-	PrettyPrint bool
+	TheVar        any
+	PrettyPrint   bool
+	BytesAsString bool
 }
 
 func (vp *VarPrinter) Print(prettyPrint bool) {
 	if vp == nil {
 		fmt.Print(NIL_VALUE)
-	} else {
-		PrintVar(vp.TheVar, prettyPrint)
+		return
 	}
+	if vp.BytesAsString {
+		if b, ok := vp.TheVar.([]byte); ok {
+			fmt.Println(string(b))
+			return
+		}
+	}
+	PrintVar(vp.TheVar, prettyPrint)
 }
 
 func (vp *VarPrinter) PrintS(prettyPrint bool) string {
 	if vp == nil {
 		return NIL_VALUE
-	} else {
-		return PrintVarS(vp.TheVar, prettyPrint)
 	}
+	if vp.BytesAsString {
+		if b, ok := vp.TheVar.([]byte); ok {
+			return string(b)
+		}
+	}
+	return PrintVarS(vp.TheVar, prettyPrint)
 }
 
 // This is the fmt.Stringer interface implementation - so when someone simply does a toString() on the struct.

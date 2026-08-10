@@ -6,6 +6,12 @@ We will mark these with Git Tags
 
 # Changes in releases
 
+## release 2.1.0
+
+New features:
+
+- `VarPrinter.BytesAsString` — when `true` and `TheVar` is `[]byte`, lazy string formatting for logs without eager `string(bytes)` conversion at the call site (VarPrinting v1.3)
+
 ## release 2.0.0
 
 Breaking:
