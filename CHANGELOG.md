@@ -6,6 +6,14 @@ We will mark these with Git Tags
 
 # Changes in releases
 
+## release 2.2.0
+
+New features:
+
+- `VarPrinter.Transform` — optional `func(any) any` applied lazily when formatting (e.g. secret masking copy only if the log line is emitted) (VarPrinting v1.4)
+- `LogStringer` (`LogString() string`) — type-owned log form honored only by `VarPrinter`, not by `PrintVar` / `PrintVarS` (VarPrinting v1.4)
+- `PrintVarWithTransform` / `PrintVarSWithTransform` — PrintVar/PrintVarS with optional eager transform; existing funcs wrap with nil transform (VarPrinting v1.4)
+
 ## release 2.1.0
 
 New features:

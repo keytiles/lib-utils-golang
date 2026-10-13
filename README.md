@@ -6,12 +6,12 @@ Package: [`pkg/kt_utils`](pkg/kt_utils) · module `github.com/keytiles/lib-utils
 
 ## What's in the box
 
-More detail is in versioned files named `<Feature>-vX.Y.md` inside [`docs/`](docs/) (open the highest `vX.Y` for each topic).
+More detail is in versioned files named `<Feature>-vX.Y.md` inside [`docs/`](docs/) (open the highest `vX.Y` for each topic). Practical how-tos live under [`docs-user/`](docs-user/).
 
 - **Strings** — resolve / extract `{var}` placeholders (`StringFunctions-…`)
 - **Maps** — keys as a slice, values as a set (`MapsFunctions-…`)
 - **Pointers** — nil-safe deref (`ValueFromPtr`); `Ptr` deprecated on Go 1.26+ (`SimpleFuncs-…`)
-- **Printing** — litter-backed dumps + lazy `VarPrinter` for logs (`VarPrinting-…`)
+- **Printing** — litter-backed dumps + lazy `VarPrinter` for logs (`VarPrinting-…`); start here: [`docs-user/howto-use-VarPrinter-v1.4.md`](docs-user/howto-use-VarPrinter-v1.4.md)
 
 ## How to use?
 

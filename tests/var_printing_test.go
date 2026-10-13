@@ -242,3 +242,120 @@ func TestVarPrinter_BytesAsString(t *testing.T) {
 		assert.Equal(t, expected, stStr)
 	})
 }
+
+type valueWithLogAndString struct {
+	Secret string
+}
+
+func (v valueWithLogAndString) String() string {
+	return "stringer:" + v.Secret
+}
+
+func (v valueWithLogAndString) LogString() string {
+	return "log:masked"
+}
+
+type stringerAndError struct {
+	msg string
+}
+
+func (e stringerAndError) String() string {
+	return "stringer:" + e.msg
+}
+
+func (e stringerAndError) Error() string {
+	return "error:" + e.msg
+}
+
+// Lazy Transform on VarPrinter, PrintVarSWithTransform, BytesAsString-after-transform,
+// VarPrinter-only LogStringer, and Stringer-before-error regression.
+func TestVarPrinter_TransformAndLogStringer(t *testing.T) {
+
+	t.Run("Transform runs only when String is invoked", func(t *testing.T) {
+		// ---- GIVEN
+		calls := 0
+		vp := kt_utils.VarPrinter{
+			TheVar: "raw",
+			Transform: func(v any) any {
+				calls++
+				return "transformed"
+			},
+		}
+		assert.Equal(t, 0, calls)
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		assert.Equal(t, 1, calls)
+		assert.Equal(t, "\"transformed\"", stStr)
+	})
+
+	t.Run("Transform result is what litter sees", func(t *testing.T) {
+		// ---- GIVEN
+		vp := kt_utils.VarPrinter{
+			TheVar: privateStruct{strField: "secret"},
+			Transform: func(v any) any {
+				return privateStruct{strField: "masked"}
+			},
+		}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		expected := "kt_utils_test.privateStruct{strField:\"masked\"}"
+		assert.Equal(t, expected, stStr)
+	})
+
+	t.Run("BytesAsString applies after Transform", func(t *testing.T) {
+		// ---- GIVEN
+		vp := kt_utils.VarPrinter{
+			TheVar:        "ignored",
+			BytesAsString: true,
+			Transform: func(v any) any {
+				return []byte("from-transform")
+			},
+		}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		assert.Equal(t, "from-transform", stStr)
+	})
+
+	t.Run("VarPrinter prefers LogStringer over Stringer", func(t *testing.T) {
+		// ---- GIVEN
+		v := valueWithLogAndString{Secret: "top-secret"}
+		vp := kt_utils.VarPrinter{TheVar: v}
+		// ---- WHEN
+		stStr := vp.String()
+		// ---- THEN
+		assert.Equal(t, "log:masked", stStr)
+	})
+
+	t.Run("PrintVarS ignores LogStringer and uses Stringer", func(t *testing.T) {
+		// ---- GIVEN
+		v := valueWithLogAndString{Secret: "top-secret"}
+		// ---- WHEN
+		stStr := kt_utils.PrintVarS(v, false)
+		// ---- THEN
+		assert.Equal(t, "stringer:top-secret", stStr)
+	})
+
+	t.Run("PrintVarSWithTransform applies transform then Stringer", func(t *testing.T) {
+		// ---- GIVEN
+		// ---- WHEN
+		stStr := kt_utils.PrintVarSWithTransform("x", false, func(v any) any {
+			return UserWithToStringFunc{Name: "Ann", Age: 20}
+		})
+		// ---- THEN
+		assert.Equal(t, "User{name: 'Ann', Age: 20}", stStr)
+	})
+
+	t.Run("Stringer wins over error", func(t *testing.T) {
+		// ---- GIVEN
+		v := stringerAndError{msg: "boom"}
+		// ---- WHEN
+		viaPrintVarS := kt_utils.PrintVarS(v, false)
+		viaVarPrinter := kt_utils.VarPrinter{TheVar: v}.String()
+		// ---- THEN
+		assert.Equal(t, "stringer:boom", viaPrintVarS)
+		assert.Equal(t, "stringer:boom", viaVarPrinter)
+	})
+}
